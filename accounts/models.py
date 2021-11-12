@@ -1,11 +1,11 @@
-from django.db                       import models
+from django.db    import models
 
 from users.models import User
 from core.models  import TimeStampModel
 
 class Account(models.Model):
-    balance = models.DecimalField(max_digits=16, decimal_places=2)
-    user    = models.ForeignKey(User, on_delete=models.CASCADE, unique=True)
+    user_balance = models.DecimalField(max_digits=16, decimal_places=2)
+    user         = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'accounts'
