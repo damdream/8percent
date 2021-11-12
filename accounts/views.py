@@ -110,14 +110,15 @@ class WithdrawView(View):
                 return JsonResponse ({"MESSAGE": "해당 계좌가 존재하지 않습니다."}, status= 404)
 
             # 잔고보다 많은 금액을 출금 요구하면 에러처리
-            if data["balance"] <= data["outcome"]:
-                return JsonResponse ({"message":"잔액 부족"},status = 404)
-
+   
             account         = Account.objects.get(id=account_id)    
             account_balance = account.balance
             total_balance   = account_balance - Decimal(outcome)
             account.balance = total_balance
             account.save()
+
+            if account.balance <= data["outcome"]:
+                return JsonResponse ({"message":"잔액 부족"},status = 404)
 
             results = {
                 'account_id'      : account.id,
