@@ -23,7 +23,7 @@
 pip install -r requirements.txt
 - python manage.py runserver를 통해 서버를 실행한다.
 <br>
-- [Postman API 주소](https://documenter.getpostman.com/view/16843875/UVC8CR6j)를 통해 확인 가능합니다.
+- [POSTMAN API 문서](https://documenter.getpostman.com/view/16843875/UVC8CR6j) 를 통해 확인 가능합니다.
 <br>
 
 ## 🟡 기본 설계
