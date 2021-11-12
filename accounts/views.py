@@ -117,7 +117,7 @@ class WithdrawView(View):
             account.balance = total_balance
             account.save()
 
-            if account.balance <= data["outcome"]:
+            if account.balance <= 0 :
                 return JsonResponse ({"message":"잔액 부족"},status = 404)
 
             results = {
