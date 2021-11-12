@@ -1,6 +1,8 @@
+import json
 import datetime
 
 from datetime import timedelta
+from decimal  import Decimal
 
 from django.http.response   import JsonResponse
 from django.db.models       import Q
@@ -65,4 +67,31 @@ class TransactionHistoryView(View):
 
         except ValueError:
             return JsonResponse({'MESSAGE':'VALUE_ERROR'}, status=400)
+
+class DepositView(View):
+    def put(self, request):
+        data = json.loads(request.body)
+        income     = data['income']
+        account_id = data['account_id']
+
+        if not Account.objects.filter(id=account_id).exists():
+            return JsonResponse({'MESSAGE':'해당 계좌가 존재하지 않습니다.'}, status=404)
+
+        account = Account.objects.get(id=account_id)
+
+        account_balance = account.balance
+
+        total_balance = account_balance + Decimal(income)
+
+        account.balance = total_balance
+        account.save()
+
+        results = {
+            'account_id'      : account.id,
+            'account_balance' : account.balance
+        }
+
+        return JsonResponse({'MESSAGE':results}, status=200)
+
+
 
