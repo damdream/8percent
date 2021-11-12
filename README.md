@@ -23,7 +23,7 @@
 pip install -r requirements.txt
 - python manage.py runserver를 통해 서버를 실행한다.
 <br>
-- [Postman API 주소](https://documenter.getpostman.com/view/16843875/UVC5F7ej) 를 통해 확인 가능합니다.
+- [Postman API 주소](https://documenter.getpostman.com/view/16843875/UVC8CR6j)를 통해 확인 가능합니다.
 <br>
 
 ## 🟡 기본 설계
@@ -64,7 +64,7 @@ pip install -r requirements.txt
 
 ## 🟡 배포 서버
 - 아래 OPEN API 링크를 통해 엔드포인트 및 API TEST를 진행할 수 있습니다.
-- 
+- http://3.35.0.116:8000/
 
 
 ## 🟡 엔드포인트 설명
