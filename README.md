@@ -27,14 +27,16 @@ pip install -r requirements.txt
 <br>
 
 ## 🟡 기본 설계
-![무제](https://user-images.githubusercontent.com/81546305/140999122-f1c0640b-4c5c-4254-ba9c-969291c65e85.jpg)
+![image](https://user-images.githubusercontent.com/81546305/141465168-efdb4b70-05ed-42a2-8bec-d525d2451037.png)
 
-- company 모델을 기본으로 이름, 언어 타입, tag 값을 각각의 row로 갖고, 
-  company_connection과 연결되는 company_id를 통해 다른 언어로 입력된 같은 회사를 연결시켜 주었습니다.
+
+- User, Account, Transaction 총 세개의 테이블로 구성하였습니다.
+- User는 기본적인 가입, 로그인/회원가입, 데코레이터를 구현했고, Account는 User와 연결된 계좌의 잔고와 기본적인 입금/출금 기능을 구행하는 테이블입니다.
+- Transaction은 거래내역을 담은 테이블로 거래 시간, 잔고, 적요, 등을 담았습니다.
 
 
 ## 🟡 구현 내용
-- 거래내여 조회 GET API
+- 거래내역 조회 GET API
 - 입금 POST API
 - 출금 POST API
 
@@ -49,11 +51,14 @@ pip install -r requirements.txt
 
 🔵 입금 POST API
 
-- 
+- json을 통해 입금할 금액, account_id, 적요를 받아온 후, account_id가 존재하는지 확인합니다. id가 없다면 계좌 없음 에러를 반환합니다.
+- 그 후 계좌 잔액과 입금 금액을 더해 전체 금액을 저장해주고, account_id와 account_balance, brief를 결과값으로 받아옵니다.
 
 🔵 출금 POST API
 
-- 
+- json을 통해 출금할 금액, account_id, 적요를 받아온 후, account_id가 존재하는지 확인합니다. id가 없다면 계좌 없음 에러를 반환합니다.
+- 그 후 계좌 잔액과 출금 금액을 빼 전체 금액을 저장해주고, 뺀 금액이 0보다 큰지 확인합니다. 0보다 작다면 잔고 부족으로 에러를 반환합니다.
+- account_id와 account_balance, brief를 결과값으로 받아옵니다.
 
 
 
@@ -66,11 +71,11 @@ pip install -r requirements.txt
 |METHOD| ENDPOINT| body | 수행목적 |
 |------|---|---|----|
 | GET	| /accounts/history?start_date&?end_date?type	| query string	| 거래 내역 조회 |
-| POST |  |  | 입금 |
-| POST | | | 출금 |
+| POST | /accounts/deposit  |  | 입금 |
+| POST | /accouts/withdraw  |  | 출금 |
 
 
-## 🟡 아쉬웠더 점
+## 🟡 아쉬웠던 점
 
 - 성우진
 <img width="669" alt="image" src="https://user-images.githubusercontent.com/85162752/141450304-0eff9404-3ff4-49b3-b099-81a91a4c2b0a.png">
@@ -79,7 +84,9 @@ pip install -r requirements.txt
   - DB join을 최소화하기 위해 하나의 쿼리문을 통해 객체르 가져올 수 있도로 하였는데, 각 객체의 user_id에 접근하여 token의 user_id와 비교할 수 있는 방법을 제출 기한 내에 생각하지 못해 첫 객체를
     기준으로 잡아 인증 검사를 하였던 것이 아쉬웠습니다.
 
-
+- 김도담
+  - user가 하나의 account를 가질 수 있게 unique=true 조건을 주었음에도 account_id를 통해 입금/출금 기능을 구현할 생각을 보다 늦게 한 것이 아쉬웠습니다.
+  - 보다 간결하게 코드를 작성하기 위해 어떻게 해야하는가? 고민할 수 있었던 시간이었습니다. 로직을 깔끔하게 코드에 담아내고, 작동될 수 있게 작성하는 것이 중요하다는 것을 다시 한 번 배웠습니다. 
 
 ## 🟡 프로젝트 회고
 
