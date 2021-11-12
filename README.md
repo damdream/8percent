@@ -34,46 +34,50 @@ pip install -r requirements.txt
 
 
 ## 🟡 구현 내용
+- 거래내여 조회 GET API
 - 입금 POST API
 - 출금 POST API
-- 거래내여 조회 GET API
 
 ## 🟡 구현 기능/구현 방법
-🔵  회사 등록 POST API
+🔵  거래내역 조회 GET API
  
-- 회사명, 언어종류, tag를 입력하여 POST API를 구현합니다. 
-- x_wanted_language를 조회해온 후 company_name과 tags를 request 받아옵니다.
-- Company_connection을 입력, 저장합니다. for문을 이용해 company의 값을 입력합니다.
-- 회사의 이름과 언어 타입, tag_list를 통해 tag가 존재한다면 append 해줍니다.
-- 결과값으로 company_name과 tags를 반환합니다. <br>
+- 검색 시작 날짜(`start_date`), 검색 종료 날짜(`end_date`), 입/출금 타입(`type`) 및 pagination data(`offset`, `limit`)을 쿼리 스트링으로 전달받습니다.
+- 각각의 쿼리스트링이 전달되지 않으 경우, 기존에 지정해두 default value를 통해 filtering하게 됩니다.
+- filtering method로는 q객체를 사용하였습니다.
+- 인증되지 않은 유저(다른 유저)의 접근을 제한하기 위해 토큰을 이용하여 사용자르 식별합니다.
+- Key Error, Value Error(잘못된 type 형식 등), Validation Error(잘못된 날짜 형식 등)에 대한 예외처리를 주었습니다.
 
+🔵 입금 POST API
 
-🔵 회사 검색 get API
+- 
 
-- company_name을 None으로 지정한 후, url path로 받은 회사 이름이 존재하면 초기화 합니다.
-- Return 언어의 타입을 지정할 수 있습니다. 입력된 회사가 존재하지 않는다면 404에러를 반환합니다.
-- 회사가 존재한다면 결과값으로 회사의 이름과 tag를 반환해줍니다.
+🔵 출금 POST API
 
-🔵 검색어 자동완성 API
-
-- search_value와 decode search_value를 get합니다. 
-- 입력된 x_wanted_language 값을 get으로 조회합니다.
-- filter의 icontains 로 입력된 값을 해당 값이 포함된 문자열을 검색한다. 값이 없다면 404 에러를 반환합니다.
-- company_connection을 통해 company_id의 pk값을 얻어오고 이 과정을 통해 얻은 값을 suggestions에 넣어주고 결과값으로 반환합니다.
+- 
 
 
 
 ## 🟡 배포 서버
 - 아래 OPEN API 링크를 통해 엔드포인트 및 API TEST를 진행할 수 있습니다.
-- [OPEN_API](http://18.224.165.47:8000)
+- 
 
 
 ## 🟡 엔드포인트 설명
 |METHOD| ENDPOINT| body | 수행목적 |
 |------|---|---|----|
-| POST	| /crud/enrollment	| company_name, tags	| 회사 추가 |
-| GET | /crud/search?query=링크 | query | 검색어 자동완성 |
-| GET | /crud/search/<str:company_name | query| 검색 기능 구현 |
+| GET	| /accounts/history?start_date&?end_date?type	| query string	| 거래 내역 조회 |
+| POST |  |  | 입금 |
+| POST | | | 출금 |
+
+
+## 🟡 아쉬웠더 점
+
+- 성우진
+<img width="669" alt="image" src="https://user-images.githubusercontent.com/85162752/141450304-0eff9404-3ff4-49b3-b099-81a91a4c2b0a.png">
+
+  - 위 조회 화면에서는 특정 기간(일주일, 한달 등)을 조회할 수 있는 버튼을 주었는데, 해당 post request에 대해 즉각적으로 반환해줄 수 있는 API를 짜지 못했더 점이 못내 아쉽습니다.
+  - DB join을 최소화하기 위해 하나의 쿼리문을 통해 객체르 가져올 수 있도로 하였는데, 각 객체의 user_id에 접근하여 token의 user_id와 비교할 수 있는 방법을 제출 기한 내에 생각하지 못해 첫 객체를
+    기준으로 잡아 인증 검사를 하였던 것이 아쉬웠습니다.
 
 
 
