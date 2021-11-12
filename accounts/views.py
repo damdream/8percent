@@ -1,6 +1,7 @@
 import datetime, json
 
 from datetime import timedelta
+from decimal  import Decimal
 
 from django.http.response   import JsonResponse
 from django.db.models       import Q
@@ -66,73 +67,65 @@ class TransactionHistoryView(View):
             return JsonResponse({'MESSAGE':'VALUE_ERROR'}, status=400)
 
 
-
 class DepositView(View):
-    @login_decorator
-    def post(self,request):
-        # try:
+    #@login_decorator
+    def put(self,request):
+        try:
             data = json.loads(request.body)
-            user_balance = data["user_balance"],
-            transaction_money = data["transaction_money"]
-            all = user_balance[0] + transaction_money
-            #Account.save()
+            income     = data["income"]
+            account_id = data["account_id"]
+            brief      = data["brief"]
+       
+            if not Account.objects.filter(id=account_id).exists():
+                return JsonResponse ({"MESSAGE": "해당 계좌가 존재하지 않습니다."}, status= 404)
 
-            # result = Account.objects.get(id=request.user.id).user_balance
-            #result = account.user_balance
-            # user = Account.objects.get(id=request.user.id)
+            account         = Account.objects.get(id=account_id)    
+            account_balance = account.balance
+            total_balance   = account_balance + Decimal(income)
+            account.balance = total_balance
+            account.save()
 
+            results = {
+                'account_id'      : account.id,
+                'account_balance' : account.balance,
+                'brief'           : account.brief
+            }
+            return JsonResponse ({"result": results},{"message":"입금 성공"},status = 201)
 
-            # # 잔고를 불러온다 + transaction_money를 더한다 + 총 잔고를 다시 저장해 계좌 잔고로 리턴
-            # user_balance = Account.objects.get(id=request.user.id).balance
-            # transaction_money = data["transaction_money"]
-            # all_balance = user_balance + transaction_money
-            # Account.save()
-            
-            # account = Account.objects.get(id=request.user.id).balance
-            # # transaction = Transaction.objects.get(id=request.user.id)
-
-            # result = Account.objects.create(
-            #     balance = account.balance,
-            #     )
-
-            brief = data["brief"]
-            #Transaction.save()
-            # result로 적요랑 금액 묶어서 보내기
-
-            return JsonResponse ({"result": all},{"brief": brief},{"message":"success deposit"},status = 201)
-
-        # except KeyError:
-        #     return JsonResponse ({"message": "KeyError"}, status = 400)
+        except KeyError:
+             return JsonResponse ({"message": "KeyError"}, status = 400)
 
 
 class WithdrawView(View):
     @login_decorator
-    def post(self,request):
-        # try:
+    def put(self,request):
+        try:
             data = json.loads(request.body)
+           
+            outcome    = data["outcome"]
+            account_id = data["account_id"]
+            brief      = data["brief"]
+       
+            if not Account.objects.filter(id=account_id).exists():
+                return JsonResponse ({"MESSAGE": "해당 계좌가 존재하지 않습니다."}, status= 404)
+
             # 잔고보다 많은 금액을 출금 요구하면 에러처리
-            if data["balance"] <= data["transaction_money"]:
-                return JsonResponse ({"message":"lack of balance"},status = 404)
+            if data["balance"] <= data["outcome"]:
+                return JsonResponse ({"message":"잔액 부족"},status = 404)
 
-            # 잔고를 불러온다 / 트랜잭션머니만큼 뺀다 / 남은 잔고 리턴 
-            user_balance = Account.objects.get(id=request.user.id).balance
-            transaction_money = data["transaction_money"]
-            all_balance = user_balance - transaction_money
-            Account.save()
-  
-            # account = Account.objects.get(id=request.user.id).balance
-            # # transaction = Transaction.objects.get(id=request.user.id)
+            account         = Account.objects.get(id=account_id)    
+            account_balance = account.balance
+            total_balance   = account_balance - Decimal(outcome)
+            account.balance = total_balance
+            account.save()
 
-            # result = Transaction.objects.create(
-            #     balance = account.balance,
-            #     transaction_money = data["transaction_money"],
+            results = {
+                'account_id'      : account.id,
+                'account_balance' : account.balance,
+                'brief'           : account.brief
+            }
+            return JsonResponse ({"result": results},{"message":"출금 성공"},status = 201)
 
-            #     brief = data["brief"]
-            #     )
-
-
-            return JsonResponse ({"balance": all_balance} ,{"message":"success withdraw"},status = 201)
-
-        # except KeyError:
-        #     return JsonResponse ({"message": "KeyError"}, status = 400)  
+        except KeyError:
+             return JsonResponse ({"message": "KeyError"}, status = 400)  
 
