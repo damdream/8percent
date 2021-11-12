@@ -68,7 +68,7 @@ class TransactionHistoryView(View):
 
 
 class DepositView(View):
-    #@login_decorator
+    @login_decorator
     def put(self,request):
         try:
             data = json.loads(request.body)
@@ -86,11 +86,11 @@ class DepositView(View):
             account.save()
 
             results = {
-                'account_id'      : account.id,
-                'account_balance' : account.balance,
-                'brief'           : account.brief
+                "account_id"      : account.id,
+                "account_balance" : account.balance,
+                "brief"           : data["brief"]
             }
-            return JsonResponse ({"result": results},{"message":"입금 성공"},status = 201)
+            return JsonResponse ({"result": results},status = 201)
 
         except KeyError:
              return JsonResponse ({"message": "KeyError"}, status = 400)
@@ -101,7 +101,6 @@ class WithdrawView(View):
     def put(self,request):
         try:
             data = json.loads(request.body)
-           
             outcome    = data["outcome"]
             account_id = data["account_id"]
             brief      = data["brief"]
@@ -120,12 +119,13 @@ class WithdrawView(View):
             if account.balance <= 0 :
                 return JsonResponse ({"message":"잔액 부족"},status = 404)
 
+            
             results = {
-                'account_id'      : account.id,
-                'account_balance' : account.balance,
-                'brief'           : account.brief
+                "account_id"      : account.id,
+                "account_balance" : account.balance,
+                "brief"           : data["brief"]
             }
-            return JsonResponse ({"result": results},{"message":"출금 성공"},status = 201)
+            return JsonResponse ({"result": results}, status = 201)
 
         except KeyError:
              return JsonResponse ({"message": "KeyError"}, status = 400)  
